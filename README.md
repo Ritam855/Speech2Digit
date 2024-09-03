@@ -1,86 +1,77 @@
-# 🎤 Digit Recognition using Hidden Markov Models and LPC
+# Speech Digit Recognition System
 
-Welcome to the Digit Recognition project! This project implements a system that recognizes spoken digits (0-9) using Hidden Markov Models (HMMs) and Linear Predictive Coding (LPC) features. The system is built entirely from scratch in C++ and processes speech data through several stages, including data normalization, feature extraction, and training a model for digit recognition.
+This project implements a speech digit recognition system that recognizes spoken digits from 0 to 9. The system is built from scratch using Hidden Markov Models (HMM) and Linear Predictive Coding (LPC) for feature extraction. The project does not use the Baum-Welch algorithm for HMM parameter estimation, opting instead for a simpler approach using cepstral coefficients and the Durbin algorithm.
 
-## 📂 Project Structure
+## Table of Contents
 
-The project is divided into several key sections:
+- [Overview](#overview)
+- [Features](#features)
+- [Technologies Used](#technologies-used)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Running the Application](#running-the-application)
+- [Project Structure](#project-structure)
+- [Detailed Explanation](#detailed-explanation)
+  - [Normalization and Feature Extraction](#normalization-and-feature-extraction)
+  - [Universe Creation](#universe-creation)
+  - [Codebook Generation](#codebook-generation)
+  - [Hidden Markov Model Training](#hidden-markov-model-training)
+  - [Recognition](#recognition)
+- [Contributing](#contributing)
+- [License](#license)
 
-1. **Universe Creation**: 
-   - Normalize data, calculate Linear Predictive Coding (LPC) coefficients, and transform them into Cepstral Coefficients.
-   - Apply LBG Algorithm to create a codebook for feature vector quantization.
+## Overview
 
-2. **HMM Training**: 
-   - Initialize HMM parameters.
-   - Use the Baum-Welch algorithm for parameter estimation.
-   - Train models for each digit.
+The system processes speech data to recognize digits by:
+1. Normalizing the audio data.
+2. Extracting features using Linear Predictive Coding (LPC) and Cepstral Coefficients.
+3. Training a Hidden Markov Model (HMM) for each digit.
+4. Recognizing the spoken digit based on the trained models.
 
-3. **Recognition**: 
-   - Apply the Viterbi algorithm to recognize digits from the input speech data.
+## Features
 
-## 🚀 Getting Started
+- **Normalization:** The audio data is normalized to reduce the impact of noise and variations in recording conditions.
+- **Feature Extraction:** LPC and Cepstral Coefficients are used to extract meaningful features from the speech signal.
+- **Codebook Generation:** The system uses the Linde-Buzo-Gray (LBG) algorithm to generate a codebook from the universe of training samples.
+- **HMM Training:** The system trains HMMs for each digit using the extracted features.
+- **Digit Recognition:** The system recognizes the spoken digit by comparing the features of the input speech with the trained models.
 
-### Prerequisites
+## Technologies Used
 
-- Windows OS (or modify for your OS)
-- C++ Compiler (Visual Studio recommended)
-- Basic understanding of HMM, LPC, and speech processing concepts
+- **C++:** Core programming language.
+- **HMM:** Hidden Markov Models for speech recognition.
+- **LPC:** Linear Predictive Coding for feature extraction.
+- **Windows API:** Used for file handling and system operations.
 
-### Compilation and Execution
+## Project Structure
 
-1. **Clone the Repository**
-    ```bash
-    git clone https://github.com/yourusername/digit-recognition-hmm.git
-    cd digit-recognition-hmm
-    ```
+- **`Digit_Recognition.cpp`**: Main source code for the digit recognition system.
+- **`234101043_universe.csv`**: Universe file storing the cepstral coefficients of the training data.
+- **`234101043_codebook.csv`**: Codebook generated from the universe set.
+- **`distortion.txt`**: Log file for tracking distortion during the LBG algorithm.
+- **`alpha.txt`, `beta.txt`**: Intermediate files for storing HMM variables.
 
-2. **Compile the Code**
-    - Open the project in Visual Studio or use the command line:
-    ```bash
-    cl Digit_Recognition.cpp
-    ```
+## Detailed Explanation
 
-3. **Run the Program**
-    ```bash
-    Digit_Recognition.exe
-    ```
+### Normalization and Feature Extraction
 
-### File Descriptions
+- **Normalization**: The audio data is normalized by removing the DC offset and scaling the amplitude to a predefined range.
+- **Feature Extraction**: The system uses Linear Predictive Coding (LPC) to calculate the reflection coefficients, which are then transformed into Cepstral Coefficients. These coefficients represent the speech signal in a compact form.
 
-- **Digit_Recognition.cpp**: Main program file containing the implementation of the entire system.
-- **234101043_universe.csv**: The universe file containing all Cepstral Coefficient vectors.
-- **234101043_codebook.csv**: The generated codebook used for quantizing feature vectors.
-- **Training Files**: Located in `234101043_dataset/English/txt/`, these are the speech files used to train the model.
+### Universe Creation
 
-## 🛠️ Key Functions
+The universe is a collection of feature vectors extracted from training samples. The system processes multiple audio files, normalizes them, and extracts cepstral coefficients, which are stored in a CSV file.
 
-### 🎧 Data Processing
-- `normalize_data(char file[100])`: Normalize the speech data by removing DC offset and clipping.
-- `durbinAlgo()`: Apply Durbin's algorithm to compute LPC coefficients.
-- `cepstralTransformation()`: Transform LPC coefficients into Cepstral coefficients.
+### Codebook Generation
 
-### 🧠 HMM Training
-- `initialization()`: Initialize the HMM parameters.
-- `calculate_alpha()`: Compute forward probabilities.
-- `calculate_beta()`: Compute backward probabilities.
-- `calculate_gamma()`: Compute the Gamma matrix for state prediction.
+The Linde-Buzo-Gray (LBG) algorithm is applied to the universe to generate a codebook. The codebook is a quantized representation of the feature space, which reduces the complexity of HMM training.
 
-### 🔍 Recognition
-- `predict_state_sequence()`: Use the Viterbi algorithm to predict the most likely sequence of states.
-- `calculate_score()`: Evaluate the model by calculating the probability of observing the sequence given the model.
+### Hidden Markov Model Training
 
-## 🌟 Features
+Each digit is modeled using a Hidden Markov Model (HMM). The system initializes the HMM parameters and uses the extracted features to train the models. The training process involves calculating forward and backward probabilities (Alpha and Beta) and updating the HMM parameters.
 
-- **Dynamic Time Warping (DTW)** for feature alignment.
-- **Baum-Welch Algorithm** for HMM training.
-- **Cepstral Coefficients** as features for better speech recognition accuracy.
-- **Viterbi Algorithm** for efficient decoding.
+### Recognition
 
-## 🎨 Example Output
+The recognition process involves calculating the probability of the observed sequence given each HMM model. The model with the highest probability is chosen as the recognized digit.
 
-When running the program, you should see output similar to this:
-
-```plaintext
-m=1    :    Distortion:0.012345
-...
-Final Recognition: Digit 7
